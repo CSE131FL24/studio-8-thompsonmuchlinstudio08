@@ -2,14 +2,34 @@ package studio8;
 
 public class SelectAllQuestion extends MultipleChoiceQuestion {
 
+	private String SAQprompt;
+	private String SAQanswer;
+	private String[] SAQchoices;
+
 	public SelectAllQuestion(String prompt, String answer, String[] choices) {
 		//Hint: 1 point per choice
 		//FIXME
+
+
+		super(prompt, answer, choices.length, choices);
+
+		SAQprompt = prompt;
+		SAQanswer = answer;
+		SAQchoices = choices;
+
 	}
-	
+
 	public int checkAnswer(String givenAnswer) {
-		//FIXME Should return partial credit (if earned)!
-		return 0;
+		
+		int points = SAQchoices.length;
+		
+			if(findMissingCorrectAnswers(givenAnswer)>0) {
+				points-= findMissingCorrectAnswers(givenAnswer);
+			}
+			if(findIncorrectGivenAnswers(givenAnswer)>0){
+				points-= findIncorrectGivenAnswers(givenAnswer);
+			}
+		return points;
 	}
 
 	private int findMissingCorrectAnswers(String givenAnswer) {
@@ -18,7 +38,7 @@ public class SelectAllQuestion extends MultipleChoiceQuestion {
 		int incorrectValues = findMissingCharacters(givenAnswer, answer);
 		return incorrectValues;
 	}
-	
+
 	private int findIncorrectGivenAnswers(String givenAnswer) {
 		String answer = this.getAnswer();
 		//how many letters are in the given answer but not the correct answer?
@@ -43,7 +63,7 @@ public class SelectAllQuestion extends MultipleChoiceQuestion {
 		}
 		return missingValues;
 	}	
-	
+
 	public static void main(String[] args) {
 		String[] choices = {"instance variables", "git", "methods", "eclipse"};
 		Question selectAll = new SelectAllQuestion("Select all of the following that can be found within a class:", "13", choices);
@@ -59,6 +79,6 @@ public class SelectAllQuestion extends MultipleChoiceQuestion {
 		System.out.println(selectAll.checkAnswer("4")); //1 point
 		System.out.println(selectAll.checkAnswer("124")); //1 point
 		System.out.println(selectAll.checkAnswer("24")); //0 points
-		
+
 	}
 }
